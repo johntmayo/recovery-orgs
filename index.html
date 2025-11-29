@@ -883,8 +883,9 @@
   </div>
 
   <script>
-    // Google Sheet CSV export URL
-    const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/122V38Bw_NmLYm29GG-BRf5QzLJmkiAXUTxofMFCMaPA/export?format=csv&gid=0';
+    // Google Sheet CSV export URL (published to web)
+    const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQCuz-jSadnjd8Hon5kD6xFVSwkvuzpc9AXG_WSCZAJukB5DDUwrtva8SXGrTEghpG-CVyrwLSKi0xn/pub?output=csv';
+    // Use CORS proxy since Google Sheets doesn't allow direct browser access
     const CSV_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(GOOGLE_SHEET_URL);
     
     let allData = [];
@@ -1145,10 +1146,11 @@
       }
     }
 
-    // Update filter dropdowns with unique values
-    function updateFilters() {
-      // Setup category checkboxes
+    // Initialize category checkboxes (doesn't depend on data)
+    function initializeCategoryCheckboxes() {
       const categoryContainer = document.getElementById('categoryCheckboxes');
+      if (!categoryContainer) return; // Safety check
+      
       categoryContainer.innerHTML = '';
       PREDEFINED_CATEGORIES.forEach(category => {
         const checkboxItem = document.createElement('div');
@@ -1165,6 +1167,11 @@
         checkboxItem.appendChild(label);
         categoryContainer.appendChild(checkboxItem);
       });
+    }
+
+    // Update filter dropdowns with unique values
+    function updateFilters() {
+      // Category checkboxes are already initialized, so we skip them here
 
       const groupTypes = [...new Set(allData.map(d => d['What kind of group is this?']).filter(Boolean))].sort();
       const fundingSources = [...new Set(allData.map(d => d['Funding source']).filter(Boolean))].sort();
@@ -1509,6 +1516,9 @@
         closeModal();
       }
     });
+
+    // Initialize checkboxes immediately (don't wait for data)
+    initializeCategoryCheckboxes();
 
     // Auto-refresh every 5 minutes
     setInterval(loadData, 5 * 60 * 1000);
