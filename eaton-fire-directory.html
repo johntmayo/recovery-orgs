@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eaton Fire Recovery Organizations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --forest-dark: #283618;
+      --forest-medium: #606C38;
+      --cream: #FEFAE0;
+      --tan: #DDA15E;
+      --brown: #BC6C25;
+      --mint-light: #afcc8e;
+      --mint-lighter: #cdf4a0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Touch-friendly improvements */
+    button, .card, .view-toggle button {
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+      tap-highlight-color: rgba(0, 0, 0, 0.1);
+    }
+
+    input, select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--forest-dark);
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header-banner {
+      background-image: url('shutterstock_2617159867.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      border-radius: 12px;
+      padding: 60px 40px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 12px rgba(40, 54, 24, 0.15);
+      position: relative;
+    }
+
+    .header-banner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(40, 54, 24, 0.4);
+      border-radius: 12px;
+    }
+
+    .header-banner h1,
+    .header-banner .subtitle {
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      font-family: 'Alegreya', serif;
+      font-weight: 800;
+      font-size: 2.5rem;
+      color: white;
+      margin-bottom: 10px;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .subtitle {
+      text-align: center;
+      color: white;
+      margin-bottom: 0;
+      font-size: 1.1rem;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    }
+
+    .controls {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(40, 54, 24, 0.1);
+      margin-bottom: 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .search-box {
+      width: 100%;
+      min-width: 250px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--mint-light);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--forest-medium);
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .filter-select {
+      width: 100%;
+      min-width: 0;
+      padding: 12px 14px;
+      border: 2px solid var(--mint-light);
+      border-radius: 8px;
+      background: white;
+      font-size: 0.95rem;
+      color: var(--forest-dark);
+      cursor: pointer;
+      transition: all 0.3s;
+      box-sizing: border-box;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23283618' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 40px;
+    }
+
+    .filter-select:hover {
+      border-color: var(--forest-medium);
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--forest-medium);
+    }
+
+    .stats {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(40, 54, 24, 0.1);
+      flex: 1;
+      min-width: 150px;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--forest-medium);
+      margin-bottom: 5px;
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--forest-dark);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--forest-medium);
+      font-size: 1.1rem;
+    }
+
+    .error {
+      background: #fee;
+      color: #c33;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 20px;
+      align-items: start;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(40, 54, 24, 0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+      border-left: 4px solid var(--forest-medium);
+      cursor: pointer;
+      overflow: hidden;
+      word-wrap: break-word;
+      max-height: 600px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(40, 54, 24, 0.15);
+    }
+
+    .card-header {
+      margin-bottom: 10px;
+    }
+
+    .card-name {
+      font-family: 'Alegreya', serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--forest-dark);
+      margin-bottom: 3px;
+    }
+
+    .card-type {
+      color: var(--forest-medium);
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .card-details {
+      display: grid;
+      gap: 6px;
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .card-name {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .detail-row {
+      display: flex;
+      gap: 8px;
+      padding: 5px 0;
+      border-bottom: 1px solid var(--cream);
+      min-width: 0;
+    }
+
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .detail-label {
+      font-weight: 600;
+      color: var(--forest-medium);
+      min-width: 140px;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .detail-value {
+      color: var(--forest-dark);
+      flex: 1;
+      font-size: 0.85rem;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+    }
+
+    .detail-value a {
+      color: var(--forest-medium);
+      text-decoration: none;
+    }
+
+    .detail-value a:hover {
+      text-decoration: underline;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin: 2px;
+    }
+
+    .badge-yes {
+      background: var(--mint-lighter);
+      color: var(--forest-dark);
+    }
+
+    .badge-no {
+      background: #f0f0f0;
+      color: #666;
+    }
+
+    .badge-tag {
+      background: var(--tan);
+      color: var(--forest-dark);
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--forest-medium);
+      font-size: 1.2rem;
+    }
+
+    .refresh-indicator {
+      text-align: center;
+      padding: 10px;
+      color: var(--forest-medium);
+      font-size: 0.85rem;
+    }
+
+    .view-toggle {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .view-toggle button {
+      padding: 8px 16px;
+      border: 2px solid var(--mint-light);
+      border-radius: 8px;
+      background: white;
+      color: var(--forest-dark);
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+    }
+
+    .view-toggle button.active {
+      background: var(--forest-medium);
+      color: white;
+      border-color: var(--forest-medium);
+    }
+
+    .view-toggle button:hover {
+      border-color: var(--forest-medium);
+    }
+
+    .filter-section {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .filter-section:first-child {
+      width: 100%;
+    }
+
+    .filter-section label {
+      display: block;
+      font-weight: 600;
+      color: var(--forest-medium);
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 15px;
+      background: white;
+      padding: 12px;
+      border-radius: 8px;
+      border: 2px solid var(--mint-light);
+      width: 100%;
+      box-sizing: border-box;
+      align-items: flex-start;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      flex: 0 1 auto;
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      cursor: pointer;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .checkbox-item label {
+      margin: 0;
+      font-weight: 400;
+      cursor: pointer;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .table-view {
+      display: none;
+      overflow-x: auto;
+    }
+
+    .table-view.active {
+      display: block;
+    }
+
+    .cards-view {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .cards-view.active {
+      display: block;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(40, 54, 24, 0.1);
+    }
+
+    thead {
+      background: var(--forest-medium);
+      color: white;
+    }
+
+    th {
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid var(--cream);
+      font-size: 0.85rem;
+    }
+
+    tbody tr:hover {
+      background: var(--cream);
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Modal/Shadowbox Styles */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      position: relative;
+      margin: auto;
+      z-index: 1;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: var(--forest-medium);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+      z-index: 1001;
+    }
+
+    .modal-close:hover {
+      background: var(--forest-dark);
+    }
+
+    .modal-card {
+      border-left: 4px solid var(--forest-medium);
+    }
+
+    .modal-card .card-details {
+      max-height: none;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .container {
+        max-width: 100%;
+      }
+
+      .header-banner {
+        padding: 30px 15px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+      }
+
+      h1 {
+        font-size: 1.75rem;
+        line-height: 1.2;
+      }
+
+      .subtitle {
+        font-size: 0.95rem;
+        line-height: 1.4;
+      }
+
+      .stats {
+        gap: 10px;
+        margin-bottom: 15px;
+        flex-direction: column;
+      }
+
+      .stat-card {
+        padding: 12px 15px;
+        min-width: 100%;
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+      }
+
+      .stat-label {
+        font-size: 0.8rem;
+      }
+
+      .controls {
+        flex-direction: column;
+        padding: 15px;
+        gap: 15px;
+      }
+
+      .search-box {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .search-box input {
+        padding: 14px 16px;
+        font-size: 16px; /* Prevents zoom on iOS */
+      }
+
+      .filter-group {
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+      }
+
+      .filter-section {
+        width: 100%;
+      }
+
+      .filter-section label {
+        font-size: 0.85rem;
+        margin-bottom: 8px;
+      }
+
+      .filter-select {
+        width: 100%;
+        padding: 14px 40px 14px 14px;
+        font-size: 16px; /* Prevents zoom on iOS */
+        min-height: 48px; /* Better touch target */
+        touch-action: manipulation;
+      }
+
+      .checkbox-group {
+        width: 100%;
+        gap: 10px;
+        padding: 12px;
+      }
+
+      .checkbox-item {
+        min-width: calc(50% - 5px);
+        flex: 0 1 calc(50% - 5px);
+      }
+
+      .checkbox-item input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        margin-top: 0;
+      }
+
+      .checkbox-item label {
+        font-size: 0.85rem;
+      }
+
+      .view-toggle {
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .view-toggle button {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+        min-height: 44px; /* Better touch target */
+        touch-action: manipulation;
+      }
+
+      .card {
+        touch-action: manipulation;
+      }
+
+      .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .card {
+        padding: 15px;
+        border-radius: 8px;
+        max-height: none;
+      }
+
+      .card-name {
+        font-size: 1.1rem;
+        line-height: 1.3;
+      }
+
+      .card-type {
+        font-size: 0.85rem;
+      }
+
+      .detail-row {
+        flex-direction: column;
+        gap: 4px;
+        padding: 8px 0;
+      }
+
+      .detail-label {
+        min-width: auto;
+        font-size: 0.8rem;
+        margin-bottom: 2px;
+      }
+
+      .detail-value {
+        font-size: 0.85rem;
+      }
+
+      .table-view {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      table {
+        font-size: 0.8rem;
+        min-width: 600px;
+      }
+
+      th, td {
+        padding: 10px 8px;
+      }
+
+      .modal-overlay {
+        padding: 10px;
+      }
+
+      .modal-content {
+        padding: 20px 15px;
+        margin: 0;
+        max-height: 95vh;
+        border-radius: 8px;
+        width: 100%;
+      }
+
+      .modal-close {
+        top: 10px;
+        right: 10px;
+        width: 44px;
+        height: 44px;
+        font-size: 1.3rem;
+        min-height: 44px; /* Better touch target */
+        min-width: 44px;
+        touch-action: manipulation;
+      }
+
+      .refresh-indicator {
+        font-size: 0.8rem;
+        padding: 8px;
+      }
+
+      .no-results {
+        padding: 40px 15px;
+        font-size: 1rem;
+      }
+
+      .loading {
+        padding: 30px 15px;
+        font-size: 1rem;
+      }
+
+      .error {
+        padding: 15px;
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 8px;
+      }
+
+      .header-banner {
+        padding: 25px 12px;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .subtitle {
+        font-size: 0.9rem;
+      }
+
+      .controls {
+        padding: 12px;
+      }
+
+      .checkbox-item {
+        min-width: 100%;
+        flex: 0 1 100%;
+      }
+
+      .card {
+        padding: 12px;
+      }
+
+      .modal-content {
+        padding: 15px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-banner">
+      <h1>Eaton Fire Recovery Organizations</h1>
+      <p class="subtitle">Find organizations providing support and resources for Eaton Fire recovery</p>
+    </div>
+
+    <div class="stats" id="stats">
+      <div class="stat-card">
+        <div class="stat-label">Total Organizations</div>
+        <div class="stat-value" id="totalCount">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Showing</div>
+        <div class="stat-value" id="showingCount">-</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search by name, category, location, or any field...">
+      </div>
+      <div class="filter-group">
+        <div class="filter-section">
+          <label for="categoryCheckboxes">Categories:</label>
+          <div class="checkbox-group" id="categoryCheckboxes">
+            <!-- Will be populated by JavaScript -->
+          </div>
+        </div>
+        <div class="filter-section">
+          <label for="groupTypeFilter">What kind of group is this?</label>
+          <select class="filter-select" id="groupTypeFilter">
+            <option value="">All Group Types</option>
+          </select>
+        </div>
+        <div class="filter-section">
+          <label for="fundingFilter">Funding Source:</label>
+          <select class="filter-select" id="fundingFilter">
+            <option value="">All Funding Sources</option>
+          </select>
+        </div>
+        <div class="filter-section">
+          <label for="prePostFireFilter">Founded pre or post-fire?</label>
+          <select class="filter-select" id="prePostFireFilter">
+            <option value="">All</option>
+          </select>
+        </div>
+        <div class="filter-section">
+          <label for="directSupportFilter">What if any direct support to survivors does the org provide?</label>
+          <select class="filter-select" id="directSupportFilter">
+            <option value="">All</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="view-toggle">
+      <span style="font-weight: 600; color: var(--forest-medium);">View:</span>
+      <button id="cardViewBtn" class="active">Cards</button>
+      <button id="tableViewBtn">Table</button>
+    </div>
+
+    <div id="refreshIndicator" class="refresh-indicator"></div>
+
+    <div id="content">
+      <div class="loading">Loading organization data...</div>
+    </div>
+
+    <!-- Modal/Shadowbox -->
+    <div id="modalOverlay" class="modal-overlay">
+      <div class="modal-content">
+        <button class="modal-close" id="modalClose">&times;</button>
+        <div id="modalCardContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Google Sheet CSV export URL
+    const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/122V38Bw_NmLYm29GG-BRf5QzLJmkiAXUTxofMFCMaPA/export?format=csv&gid=0';
+    const CSV_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(GOOGLE_SHEET_URL);
+    
+    let allData = [];
+    let filteredData = [];
+    let currentView = 'cards'; // 'cards' or 'table'
+
+    // Predefined categories
+    const PREDEFINED_CATEGORIES = [
+      'Emergency/ Interim Housing & Stabilization',
+      'Smoke Remediation & Repairs',
+      'Warehouse/Distribution/Item Donations',
+      'Community, Arts, Culture and Education',
+      'Spiritual & Emotional Wellness / Mental Health',
+      'Business Recovery',
+      'Rebuild',
+      'Health & Safety',
+      'Philanthropy'
+    ];
+
+    // Parse CSV data - properly handles multi-line quoted fields
+    function parseCSV(text) {
+      // Parse CSV properly handling multi-line quoted fields
+      const rows = [];
+      let currentRow = [];
+      let currentField = '';
+      let inQuotes = false;
+      
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const nextChar = text[i + 1];
+        
+        if (char === '"') {
+          // Handle escaped quotes ("")
+          if (inQuotes && nextChar === '"') {
+            currentField += '"';
+            i++; // Skip next quote
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === ',' && !inQuotes) {
+          // Field separator (only when not in quotes)
+          currentRow.push(currentField.trim());
+          currentField = '';
+        } else if ((char === '\n' || char === '\r') && !inQuotes) {
+          // Row separator (only when not in quotes)
+          // Handle \r\n (Windows line endings)
+          if (char === '\r' && nextChar === '\n') {
+            i++; // Skip \n
+          }
+          if (currentField.trim() || currentRow.length > 0) {
+            currentRow.push(currentField.trim());
+            if (currentRow.length > 0 && currentRow.some(f => f.length > 0)) {
+              rows.push(currentRow);
+            }
+            currentRow = [];
+            currentField = '';
+          }
+        } else {
+          currentField += char;
+        }
+      }
+      
+      // Handle last field/row
+      if (currentField.trim() || currentRow.length > 0) {
+        currentRow.push(currentField.trim());
+        if (currentRow.length > 0 && currentRow.some(f => f.length > 0)) {
+          rows.push(currentRow);
+        }
+      }
+      
+      if (rows.length < 2) return [];
+
+      // First row is headers
+      const headers = rows[0].map(h => h.trim().replace(/^"|"$/g, ''));
+      const data = [];
+      
+      // Find the Group Name column index - MUST exist
+      const groupNameIndex = headers.findIndex(h => 
+        h.toLowerCase().includes('group name') || 
+        h.toLowerCase() === 'group name'
+      );
+      
+      // If we can't find Group Name column, skip all rows
+      if (groupNameIndex < 0) {
+        console.error('Group Name column not found in spreadsheet');
+        return [];
+      }
+      
+      // Debug: Log the Group Name column header and index
+      console.log('Group Name column found at index', groupNameIndex, 'with header:', headers[groupNameIndex]);
+
+      // Track seen group names to prevent duplicates
+      const seenGroupNames = new Set();
+      let filteredCount = 0;
+      const filteredReasons = {};
+
+      for (let i = 1; i < rows.length; i++) {
+        const values = rows[i];
+        if (values.length === 0) continue;
+
+        // Ensure we have enough columns to access the Group Name column
+        if (values.length <= groupNameIndex) continue;
+
+        // Get Group Name - this is the ONLY thing that matters
+        const groupName = values[groupNameIndex] ? values[groupNameIndex].trim() : '';
+        
+        // STRICT: Skip rows without a Group Name
+        if (!groupName || groupName.length < 2) {
+          filteredCount++;
+          filteredReasons['Empty or too short'] = (filteredReasons['Empty or too short'] || 0) + 1;
+          continue;
+        }
+        
+        const lowerName = groupName.toLowerCase();
+        
+        // STRICT: Reject if it looks like notes/description text
+        // - Too long (likely notes or description)
+        if (groupName.length > 100) continue;
+        
+        // - Contains URLs (http, https, www, .com, .org, .net, etc.)
+        // Also catch variations like "HTTPS: slash slash WWW"
+        if (/https?:\/\//i.test(groupName) || 
+            /https?:\s*\/\s*\//i.test(groupName) ||
+            /www\./i.test(groupName) || 
+            /w{3}\./i.test(groupName) ||
+            /\.[a-z]{2,}(\/|$)/i.test(groupName) ||
+            /\b(https?|www)\b/i.test(groupName) ||
+            /\.(com|org|net|edu|gov|io)(\/|$|\s)/i.test(groupName)) {
+          continue;
+        }
+        
+        // - Contains email addresses anywhere
+        if (groupName.includes('@')) {
+          continue;
+        }
+        
+        // - Contains multiple commas (likely concatenated data from other columns)
+        // But allow up to 2 commas for legitimate org names with parenthetical info
+        if ((groupName.match(/,/g) || []).length > 2) continue;
+        
+        // - Starts with common preposition/prepositional phrases (likely descriptions)
+        if (lowerName.match(/^(in|on|at|for|with|the|a|an|through|via|by|from|to|of)\s/)) continue;
+        
+        // - Starts with description/problem phrases (clearly not org names)
+        const descriptionStarters = [
+          'lack of', 'need for', 'issue with', 'problem with', 'challenge with',
+          'absence of', 'shortage of', 'gap in', 'barrier to', 'obstacle to',
+          'concern about', 'worry about', 'question about', 'discussion about',
+          'focus on', 'emphasis on', 'priority on', 'attention to'
+        ];
+        if (descriptionStarters.some(phrase => lowerName.startsWith(phrase))) continue;
+        
+        // - Starts with lowercase action verbs (likely notes/descriptions)
+        const actionVerbs = ['connect', 'provide', 'help', 'support', 'assist', 'offer', 'deliver', 'organize', 'coordinate', 'preserve', 'share', 'access'];
+        if (actionVerbs.some(verb => lowerName.startsWith(verb + ' '))) continue;
+        
+        // - Contains only punctuation/special chars (must have at least one letter or number)
+        if (!/[a-zA-Z0-9]/.test(groupName)) continue;
+        
+        // - Looks like a person's name followed by contact info (e.g., "Angela Hill, https://...")
+        // Check if it starts with what looks like a name (2+ words, first capitalized) followed by comma and URL/email
+        const namePattern = /^[A-Z][a-z]+ [A-Z][a-z]+/;
+        if (namePattern.test(groupName) && (groupName.includes(',') || groupName.includes('@') || /https?|www|\.(com|org|net)/i.test(groupName))) {
+          continue;
+        }
+        
+        // Calculate word count for validation checks
+        const wordCount = lowerName.split(/\s+/).length;
+        
+        // - Contains common description phrases (but only if they appear at the start or are clearly descriptions)
+        const descriptionPhrases = [
+          'through shared', 'via shared', 'by providing', 'in order to', 'as part of', 'for the purpose',
+          'lack of', 'need for', 'issue with', 'problem with', 'challenge with'
+        ];
+        // Only reject if phrase appears at start or is clearly a description pattern
+        if (descriptionPhrases.some(phrase => lowerName.startsWith(phrase) || (lowerName.includes(phrase) && lowerName.length > 50))) continue;
+        
+        // Check for "and enforcement" etc. only if it's a short phrase (likely description)
+        const enforcementPhrases = ['and enforcement', 'and implementation', 'and coordination', 'and management'];
+        if (enforcementPhrases.some(phrase => lowerName.includes(phrase) && wordCount <= 6)) continue;
+        
+        // - Looks like an incomplete sentence or description fragment
+        // Phrases ending with "of", "and", "or", "the", "a", "an" are likely incomplete
+        if (lowerName.match(/\s+(of|and|or|the|a|an)$/)) continue;
+        
+        // - Contains words that indicate it's a description, not an org name
+        const descriptionWords = ['accountability', 'enforcement', 'implementation', 'coordination', 'management', 'administration'];
+        const descriptionWordCount = descriptionWords.filter(word => lowerName.includes(word)).length;
+        // If it's a very short phrase (3-4 words) and contains multiple description words, it's likely a description
+        // But allow longer org names that might contain these words
+        if (wordCount <= 4 && descriptionWordCount >= 2) continue;
+        
+        // - Too short to be a real org name (must have at least one meaningful word or be a single word of 3+ chars)
+        // Allow single words (like "211LA", "24LA") even if they're short, as long as they're 3+ chars total
+        if (groupName.split(/\s+/).length === 1) {
+          // Single word - just check it's at least 3 characters
+          if (groupName.length < 3) continue;
+        } else {
+          // Multiple words - check for meaningful words
+          const meaningfulWords = groupName.split(/\s+/).filter(w => w.length > 2 && !['the', 'and', 'for', 'with', 'of', 'to', 'a', 'an'].includes(w.toLowerCase()));
+          if (meaningfulWords.length < 1) continue;
+        }
+        
+        // - Check for duplicates (case-insensitive)
+        const normalizedGroupName = groupName.toLowerCase().trim();
+        if (seenGroupNames.has(normalizedGroupName)) {
+          console.warn('Duplicate group name skipped:', groupName);
+          continue;
+        }
+        seenGroupNames.add(normalizedGroupName);
+        
+        // - Reject if it looks like a header/column name (exact match with any header)
+        if (headers.some(header => header.toLowerCase() === normalizedGroupName)) {
+          continue;
+        }
+        
+        // If we get here, it's likely a valid org name
+        const row = {};
+        headers.forEach((header, index) => {
+          // Only map values that exist in the values array
+          // Remove surrounding quotes and trim
+          let value = (index < values.length && values[index]) ? values[index].trim() : '';
+          value = value.replace(/^"|"$/g, ''); // Remove surrounding quotes
+          row[header] = value;
+        });
+        data.push(row);
+      }
+
+      // Debug: Log filtering stats
+      console.log(`Parsed ${rows.length - 1} rows, kept ${data.length} organizations, filtered ${filteredCount}`);
+      if (Object.keys(filteredReasons).length > 0) {
+        console.log('Filter reasons:', filteredReasons);
+      }
+
+      return data;
+    }
+
+
+    // Load data from Google Sheet
+    async function loadData() {
+      try {
+        const response = await fetch(CSV_URL);
+        if (!response.ok) throw new Error('Failed to fetch data');
+        
+        const text = await response.text();
+        allData = parseCSV(text);
+        
+        if (allData.length === 0) {
+          throw new Error('No data found in sheet');
+        }
+
+        updateFilters();
+        applyFilters();
+        updateRefreshIndicator();
+      } catch (error) {
+        document.getElementById('content').innerHTML = 
+          `<div class="error">Error loading data: ${error.message}<br>Please check that the Google Sheet is accessible.</div>`;
+      }
+    }
+
+    // Update filter dropdowns with unique values
+    function updateFilters() {
+      // Setup category checkboxes
+      const categoryContainer = document.getElementById('categoryCheckboxes');
+      categoryContainer.innerHTML = '';
+      PREDEFINED_CATEGORIES.forEach(category => {
+        const checkboxItem = document.createElement('div');
+        checkboxItem.className = 'checkbox-item';
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = `cat-${category.replace(/[^a-zA-Z0-9]/g, '-')}`;
+        checkbox.value = category;
+        checkbox.addEventListener('change', applyFilters);
+        const label = document.createElement('label');
+        label.htmlFor = checkbox.id;
+        label.textContent = category;
+        checkboxItem.appendChild(checkbox);
+        checkboxItem.appendChild(label);
+        categoryContainer.appendChild(checkboxItem);
+      });
+
+      const groupTypes = [...new Set(allData.map(d => d['What kind of group is this?']).filter(Boolean))].sort();
+      const fundingSources = [...new Set(allData.map(d => d['Funding source']).filter(Boolean))].sort();
+      const prePostFire = [...new Set(allData.map(d => d['Formed pre or post fire?']).filter(Boolean))].sort();
+      const directSupport = [...new Set(allData.map(d => d['Eaton Fire Survivors direct support?']).filter(Boolean))].sort();
+
+      populateSelect('groupTypeFilter', groupTypes, 'All Group Types');
+      populateSelect('fundingFilter', fundingSources, 'All Funding Sources');
+      populateSelect('prePostFireFilter', prePostFire, 'All');
+      populateSelect('directSupportFilter', directSupport, 'All');
+    }
+
+    function populateSelect(selectId, options, defaultLabel) {
+      const select = document.getElementById(selectId);
+      const currentValue = select.value;
+      select.innerHTML = `<option value="">${defaultLabel}</option>`;
+      options.forEach(option => {
+        const optionEl = document.createElement('option');
+        optionEl.value = option;
+        optionEl.textContent = option;
+        select.appendChild(optionEl);
+      });
+      if (currentValue && options.includes(currentValue)) {
+        select.value = currentValue;
+      }
+    }
+
+    // Apply filters and search
+    function applyFilters() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      
+      // Get selected categories from checkboxes
+      const selectedCategories = Array.from(document.querySelectorAll('#categoryCheckboxes input[type="checkbox"]:checked'))
+        .map(cb => cb.value);
+      
+      const groupTypeFilter = document.getElementById('groupTypeFilter').value;
+      const fundingFilter = document.getElementById('fundingFilter').value;
+      const prePostFireFilter = document.getElementById('prePostFireFilter').value;
+      const directSupportFilter = document.getElementById('directSupportFilter').value;
+
+      filteredData = allData.filter(item => {
+        // Search filter
+        if (searchTerm) {
+          const searchableText = Object.values(item).join(' ').toLowerCase();
+          if (!searchableText.includes(searchTerm)) return false;
+        }
+
+        // Category filter - check if any selected category is in the org's categories
+        if (selectedCategories.length > 0) {
+          const category = item['Catagory (potential to be in EFR working groups)'] || item['Category (potential to be in EFR working groups)'] || '';
+          const orgCategories = category.split(',').map(c => c.trim()).filter(Boolean);
+          const hasSelectedCategory = selectedCategories.some(selectedCat => 
+            orgCategories.some(orgCat => orgCat.includes(selectedCat) || selectedCat.includes(orgCat))
+          );
+          if (!hasSelectedCategory) return false;
+        }
+
+        // Group type filter
+        if (groupTypeFilter && item['What kind of group is this?'] !== groupTypeFilter) return false;
+
+        // Funding source filter
+        if (fundingFilter && item['Funding source'] !== fundingFilter) return false;
+
+        // Pre/post fire filter
+        if (prePostFireFilter && item['Formed pre or post fire?'] !== prePostFireFilter) return false;
+
+        // Direct support filter
+        if (directSupportFilter && item['Eaton Fire Survivors direct support?'] !== directSupportFilter) return false;
+
+        return true;
+      });
+
+      renderContent();
+      updateStats();
+    }
+
+    // Render content based on current view
+    function renderContent() {
+      const content = document.getElementById('content');
+
+      if (filteredData.length === 0) {
+        content.innerHTML = '<div class="no-results">No organizations found matching your search criteria.</div>';
+        return;
+      }
+
+      if (currentView === 'cards') {
+        renderCards(content);
+      } else {
+        renderTable(content);
+      }
+    }
+
+    // Render organization cards
+    function renderCards(content) {
+      content.innerHTML = '<div class="cards-view active"><div class="cards-grid"></div></div>';
+      const grid = content.querySelector('.cards-grid');
+
+      filteredData.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const details = [];
+        
+        // Website
+        if (item.Website && item.Website.trim()) {
+          const websiteUrl = item.Website.startsWith('http') ? item.Website : `https://${item.Website}`;
+          details.push(createDetailRow('Website', `<a href="${websiteUrl}" target="_blank" rel="noopener noreferrer">${item.Website}</a>`));
+        }
+
+        // Category
+        const category = item['Catagory (potential to be in EFR working groups)'] || item['Category (potential to be in EFR working groups)'] || '';
+        if (category && category.trim()) {
+          const categories = category.split(',').map(c => c.trim()).filter(Boolean);
+          if (categories.length > 0) {
+            details.push(createDetailRow('Category', categories.map(c => `<span class="badge badge-tag">${c}</span>`).join('')));
+          }
+        }
+
+        // Group type
+        if (item['What kind of group is this?'] && item['What kind of group is this?'].trim()) {
+          details.push(createDetailRow('Group Type', item['What kind of group is this?']));
+        }
+
+        // Funding source
+        if (item['Funding source'] && item['Funding source'].trim()) {
+          details.push(createDetailRow('Funding Source', item['Funding source']));
+        }
+
+        // Direct support
+        if (item['Eaton Fire Survivors direct support?'] && item['Eaton Fire Survivors direct support?'].trim()) {
+          const hasSupport = item['Eaton Fire Survivors direct support?'].toLowerCase().includes('yes') || 
+                            item['Eaton Fire Survivors direct support?'].toLowerCase() === 'y' ||
+                            item['Eaton Fire Survivors direct support?'].toLowerCase().includes('direct');
+          details.push(createDetailRow('Direct Support', `<span class="badge ${hasSupport ? 'badge-yes' : 'badge-no'}">${item['Eaton Fire Survivors direct support?']}</span>`));
+        }
+
+        // Indirect impact
+        if (item['Indirect impact (funding or support)'] && item['Indirect impact (funding or support)'].trim()) {
+          details.push(createDetailRow('Indirect Impact', item['Indirect impact (funding or support)']));
+        }
+
+        // What they're asking for
+        if (item['What this group is asking for'] && item['What this group is asking for'].trim()) {
+          details.push(createDetailRow('Needs', item['What this group is asking for']));
+        }
+
+        // Physical location
+        if (item['Physical location nearby'] && item['Physical location nearby'].trim()) {
+          details.push(createDetailRow('Location', item['Physical location nearby']));
+        }
+
+        // Pre/post fire
+        if (item['Formed pre or post fire?'] && item['Formed pre or post fire?'].trim()) {
+          details.push(createDetailRow('Formed', item['Formed pre or post fire?']));
+        }
+
+        // Listed on eaton fire collaborative website
+        if (item['Listed on eaton fire collaborative website'] && item['Listed on eaton fire collaborative website'].trim()) {
+          const listed = item['Listed on eaton fire collaborative website'].toLowerCase().includes('yes') || 
+                        item['Listed on eaton fire collaborative website'].toLowerCase() === 'y';
+          details.push(createDetailRow('Listed on EFC Website', `<span class="badge ${listed ? 'badge-yes' : 'badge-no'}">${item['Listed on eaton fire collaborative website']}</span>`));
+        }
+
+        // Types of information they provide
+        if (item['Types of information they provide'] && item['Types of information they provide'].trim()) {
+          details.push(createDetailRow('Information Provided', item['Types of information they provide']));
+        }
+
+        // Notes
+        if (item.Notes && item.Notes.trim()) {
+          details.push(createDetailRow('Notes', item.Notes));
+        }
+
+        // Facebook
+        if (item.Facebook && item.Facebook.trim()) {
+          const fbUrl = item.Facebook.startsWith('http') ? item.Facebook : `https://${item.Facebook}`;
+          details.push(createDetailRow('Facebook', `<a href="${fbUrl}" target="_blank" rel="noopener noreferrer">${item.Facebook}</a>`));
+        }
+
+        // Instagram
+        if (item.Instagram && item.Instagram.trim()) {
+          const igUrl = item.Instagram.startsWith('http') ? item.Instagram : `https://${item.Instagram}`;
+          details.push(createDetailRow('Instagram', `<a href="${igUrl}" target="_blank" rel="noopener noreferrer">${item.Instagram}</a>`));
+        }
+
+        // Org Leaders
+        if (item['Org Leaders'] && item['Org Leaders'].trim()) {
+          details.push(createDetailRow('Leaders', item['Org Leaders']));
+        }
+
+        // Org Email/Contact
+        if (item['Org Email/Contact'] && item['Org Email/Contact'].trim()) {
+          const contact = item['Org Email/Contact'].trim();
+          if (contact.includes('@')) {
+            details.push(createDetailRow('Contact', `<a href="mailto:${contact}">${contact}</a>`));
+          } else {
+            details.push(createDetailRow('Contact', contact));
+          }
+        }
+
+        card.innerHTML = `
+          <div class="card-header">
+            <div class="card-name">${item['Group Name'] || 'Unnamed Organization'}</div>
+            ${item['What kind of group is this?'] ? `<div class="card-type">${item['What kind of group is this?']}</div>` : ''}
+          </div>
+          <div class="card-details">
+            ${details.join('')}
+          </div>
+        `;
+
+        // Add click handler (but allow links to work)
+        card.addEventListener('click', (e) => {
+          // Don't open modal if clicking on a link
+          if (e.target.tagName === 'A' || e.target.closest('a')) {
+            return;
+          }
+          showModal(item, details);
+        });
+
+        grid.appendChild(card);
+      });
+    }
+
+    function createDetailRow(label, value) {
+      return `
+        <div class="detail-row">
+          <div class="detail-label">${label}:</div>
+          <div class="detail-value">${value || '—'}</div>
+        </div>
+      `;
+    }
+
+    // Update statistics
+    function updateStats() {
+      document.getElementById('totalCount').textContent = allData.length;
+      document.getElementById('showingCount').textContent = filteredData.length;
+    }
+
+    // Update refresh indicator
+    function updateRefreshIndicator() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString();
+      document.getElementById('refreshIndicator').textContent = 
+        `Last updated: ${timeString} • Auto-refreshes every 5 minutes`;
+    }
+
+    // Render table view
+    function renderTable(content) {
+      content.innerHTML = '<div class="table-view active"><table><thead><tr><th>Organization</th><th>Type</th><th>Category</th><th>Website</th><th>Contact</th><th>Location</th></tr></thead><tbody></tbody></table></div>';
+      const tbody = content.querySelector('tbody');
+
+      filteredData.forEach(item => {
+        const row = document.createElement('tr');
+        
+        const category = item['Catagory (potential to be in EFR working groups)'] || item['Category (potential to be in EFR working groups)'] || '';
+        const categories = category ? category.split(',').map(c => c.trim()).filter(Boolean).join(', ') : '—';
+        
+        let websiteCell = '—';
+        if (item.Website) {
+          const websiteUrl = item.Website.startsWith('http') ? item.Website : `https://${item.Website}`;
+          websiteCell = `<a href="${websiteUrl}" target="_blank" rel="noopener noreferrer">${item.Website}</a>`;
+        }
+        
+        let contactCell = item['Org Email/Contact'] || '—';
+        if (contactCell.includes('@')) {
+          contactCell = `<a href="mailto:${contactCell}">${contactCell}</a>`;
+        }
+
+        row.innerHTML = `
+          <td><strong>${item['Group Name'] || 'Unnamed'}</strong></td>
+          <td>${item['What kind of group is this?'] || '—'}</td>
+          <td>${categories}</td>
+          <td>${websiteCell}</td>
+          <td>${contactCell}</td>
+          <td>${item['Physical location nearby'] || '—'}</td>
+        `;
+        
+        tbody.appendChild(row);
+      });
+    }
+
+    // Event listeners
+    document.getElementById('searchInput').addEventListener('input', applyFilters);
+    document.getElementById('groupTypeFilter').addEventListener('change', applyFilters);
+    document.getElementById('fundingFilter').addEventListener('change', applyFilters);
+    document.getElementById('prePostFireFilter').addEventListener('change', applyFilters);
+    document.getElementById('directSupportFilter').addEventListener('change', applyFilters);
+
+    // View toggle event listeners
+    document.getElementById('cardViewBtn').addEventListener('click', () => {
+      currentView = 'cards';
+      document.getElementById('cardViewBtn').classList.add('active');
+      document.getElementById('tableViewBtn').classList.remove('active');
+      renderContent();
+    });
+
+    document.getElementById('tableViewBtn').addEventListener('click', () => {
+      currentView = 'table';
+      document.getElementById('tableViewBtn').classList.add('active');
+      document.getElementById('cardViewBtn').classList.remove('active');
+      renderContent();
+    });
+
+    // Modal functions
+    function showModal(item, details) {
+      const modalOverlay = document.getElementById('modalOverlay');
+      const modalContent = document.getElementById('modalCardContent');
+      
+      modalContent.innerHTML = `
+        <div class="card modal-card">
+          <div class="card-header">
+            <div class="card-name">${item['Group Name'] || 'Unnamed Organization'}</div>
+            ${item['What kind of group is this?'] ? `<div class="card-type">${item['What kind of group is this?']}</div>` : ''}
+          </div>
+          <div class="card-details">
+            ${details.join('')}
+          </div>
+        </div>
+      `;
+      
+      modalOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      const modalOverlay = document.getElementById('modalOverlay');
+      modalOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Modal event listeners
+    document.getElementById('modalClose').addEventListener('click', closeModal);
+    document.getElementById('modalOverlay').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('modalOverlay')) {
+        closeModal();
+      }
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+
+    // Auto-refresh every 5 minutes
+    setInterval(loadData, 5 * 60 * 1000);
+
+    // Initial load
+    loadData();
+  </script>
+</body>
+</html>
+
