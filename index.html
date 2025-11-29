@@ -394,46 +394,42 @@
       line-height: 1.4;
     }
 
-    .checkbox-group {
+    .pill-group {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px 15px;
-      background: white;
-      padding: 12px;
-      border-radius: 8px;
-      border: 2px solid var(--mint-light);
+      gap: 10px;
       width: 100%;
       box-sizing: border-box;
-      align-items: flex-start;
     }
 
-    .checkbox-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      flex: 0 1 auto;
-      min-width: 0;
-      max-width: 100%;
-    }
-
-    .checkbox-item input[type="checkbox"] {
-      cursor: pointer;
-      width: 18px;
-      height: 18px;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-
-    .checkbox-item label {
-      margin: 0;
-      font-weight: 400;
-      cursor: pointer;
+    .category-pill {
+      padding: 8px 16px;
+      border: 2px solid var(--mint-light);
+      border-radius: 20px;
+      background: white;
+      color: var(--forest-dark);
       font-size: 0.9rem;
-      line-height: 1.4;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-      flex: 1;
-      min-width: 0;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+      white-space: nowrap;
+    }
+
+    .category-pill:hover {
+      border-color: var(--forest-medium);
+      background: var(--cream);
+    }
+
+    .category-pill.selected {
+      background: var(--forest-medium);
+      color: white;
+      border-color: var(--forest-medium);
+    }
+
+    .category-pill.selected:hover {
+      background: var(--forest-dark);
+      border-color: var(--forest-dark);
     }
 
     .table-view {
@@ -637,25 +633,15 @@
         touch-action: manipulation;
       }
 
-      .checkbox-group {
-        width: 100%;
-        gap: 10px;
-        padding: 12px;
+      .pill-group {
+        gap: 8px;
       }
 
-      .checkbox-item {
-        min-width: calc(50% - 5px);
-        flex: 0 1 calc(50% - 5px);
-      }
-
-      .checkbox-item input[type="checkbox"] {
-        width: 20px;
-        height: 20px;
-        margin-top: 0;
-      }
-
-      .checkbox-item label {
+      .category-pill {
+        padding: 10px 14px;
         font-size: 0.85rem;
+        white-space: normal;
+        min-height: 44px;
       }
 
       .view-toggle {
@@ -790,9 +776,9 @@
         padding: 12px;
       }
 
-      .checkbox-item {
-        min-width: 100%;
-        flex: 0 1 100%;
+      .category-pill {
+        width: 100%;
+        white-space: normal;
       }
 
       .card {
@@ -829,9 +815,17 @@
       </div>
       <div class="filter-group">
         <div class="filter-section">
-          <label for="categoryCheckboxes">Categories:</label>
-          <div class="checkbox-group" id="categoryCheckboxes">
-            <!-- Will be populated by JavaScript -->
+          <label>Categories:</label>
+          <div class="pill-group" id="categoryPills">
+            <button type="button" class="category-pill" data-category="Emergency/ Interim Housing & Stabilization">Emergency/ Interim Housing & Stabilization</button>
+            <button type="button" class="category-pill" data-category="Smoke Remediation & Repairs">Smoke Remediation & Repairs</button>
+            <button type="button" class="category-pill" data-category="Warehouse/Distribution/Item Donations">Warehouse/Distribution/Item Donations</button>
+            <button type="button" class="category-pill" data-category="Community, Arts, Culture and Education">Community, Arts, Culture and Education</button>
+            <button type="button" class="category-pill" data-category="Spiritual & Emotional Wellness / Mental Health">Spiritual & Emotional Wellness / Mental Health</button>
+            <button type="button" class="category-pill" data-category="Business Recovery">Business Recovery</button>
+            <button type="button" class="category-pill" data-category="Rebuild">Rebuild</button>
+            <button type="button" class="category-pill" data-category="Health & Safety">Health & Safety</button>
+            <button type="button" class="category-pill" data-category="Philanthropy">Philanthropy</button>
           </div>
         </div>
         <div class="filter-section">
@@ -1146,26 +1140,14 @@
       }
     }
 
-    // Initialize category checkboxes (doesn't depend on data)
-    function initializeCategoryCheckboxes() {
-      const categoryContainer = document.getElementById('categoryCheckboxes');
-      if (!categoryContainer) return; // Safety check
-      
-      categoryContainer.innerHTML = '';
-      PREDEFINED_CATEGORIES.forEach(category => {
-        const checkboxItem = document.createElement('div');
-        checkboxItem.className = 'checkbox-item';
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.id = `cat-${category.replace(/[^a-zA-Z0-9]/g, '-')}`;
-        checkbox.value = category;
-        checkbox.addEventListener('change', applyFilters);
-        const label = document.createElement('label');
-        label.htmlFor = checkbox.id;
-        label.textContent = category;
-        checkboxItem.appendChild(checkbox);
-        checkboxItem.appendChild(label);
-        categoryContainer.appendChild(checkboxItem);
+    // Initialize category pill buttons
+    function initializeCategoryPills() {
+      const pills = document.querySelectorAll('.category-pill');
+      pills.forEach(pill => {
+        pill.addEventListener('click', function() {
+          this.classList.toggle('selected');
+          applyFilters();
+        });
       });
     }
 
@@ -1201,11 +1183,16 @@
 
     // Apply filters and search
     function applyFilters() {
+      // Don't filter if data hasn't loaded yet
+      if (!allData || allData.length === 0) {
+        return;
+      }
+      
       const searchTerm = document.getElementById('searchInput').value.toLowerCase();
       
-      // Get selected categories from checkboxes
-      const selectedCategories = Array.from(document.querySelectorAll('#categoryCheckboxes input[type="checkbox"]:checked'))
-        .map(cb => cb.value);
+      // Get selected categories from pills
+      const selectedCategories = Array.from(document.querySelectorAll('.category-pill.selected'))
+        .map(pill => pill.getAttribute('data-category'));
       
       const groupTypeFilter = document.getElementById('groupTypeFilter').value;
       const fundingFilter = document.getElementById('fundingFilter').value;
@@ -1517,8 +1504,8 @@
       }
     });
 
-    // Initialize checkboxes immediately (don't wait for data)
-    initializeCategoryCheckboxes();
+    // Initialize category pill buttons
+    initializeCategoryPills();
 
     // Auto-refresh every 5 minutes
     setInterval(loadData, 5 * 60 * 1000);
